@@ -67,6 +67,7 @@
       text-align: left;
     }
 
+    /* Kalender */
     .calendar {
       font-family: monospace;
       font-size: 1.2em;
@@ -88,32 +89,12 @@
       background-color: transparent;
     }
 
-    .notes {
-      margin-top: 20px;
-      font-size: 1.2em;
-      color: #333;
-    }
-
-    textarea {
-      width: 100%;
-      height: 150px;
-      font-size: 1.2em;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      resize: none;
-    }
-
-    strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
+    /* Timer */
     .timer-buttons {
       margin-top: 20px;
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
+      gap: 20px; /* Abstand zwischen den Buttons */
     }
 
     .timer-buttons button {
@@ -130,6 +111,23 @@
 
     .timer-buttons button:hover {
       background-color: #e64a19;
+    }
+
+    /* Notizen */
+    .notes {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 1.2em;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
     }
   </style>
 </head>
@@ -152,7 +150,7 @@
       <div id="calendarOutput"></div>
     </div>
 
-    <!-- NOTIZEN (Textfeld, um es zu bearbeiten) -->
+    <!-- NOTIZEN -->
     <div class="section notes">
       <strong>Notizen:</strong>
       <textarea id="editableNotes">• Heute ist ein guter Tag für Fortschritt. 🎯
@@ -263,8 +261,7 @@
     (function(){
       var now = new Date();
       var dayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-      var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                        "Juli", "August", "September", "Oktober", "November", "Dezember"];
+      var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 
       var day = now.getDate();
       var weekday = now.getDay();
@@ -287,7 +284,22 @@
         calendarOutput.innerHTML += `<div>${dayNumber}</div>`;
       }
     })();
-  </script>
 
+    // === TIMER ===
+    function startTimer(minutes) {
+      var time = minutes * 60;
+      var interval = setInterval(function() {
+        var minutesLeft = Math.floor(time / 60);
+        var secondsLeft = time % 60;
+        document.getElementById("digitalClock").textContent =
+          (minutesLeft < 10 ? "0" + minutesLeft : minutesLeft) + ":" +
+          (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft);
+        if (time <= 0) {
+          clearInterval(interval);
+        }
+        time--;
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
