@@ -20,10 +20,22 @@
       background: url('Werkstatt.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       text-align: center;
+    }
+
+    /* Container für alle Inhalte */
+    .container {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     /* Anpassung des Canvas für das iPad 2 */
@@ -35,7 +47,6 @@
       height: auto;  /* Dynamische Höhe */
       max-width: 400px; /* Maximale Größe */
       max-height: 400px; /* Maximale Höhe */
-      margin-top: 10px;
     }
 
     #digitalClock {
@@ -52,7 +63,7 @@
       border-radius: 10px;
       display: inline-block;
       max-width: 95vw;
-      word-wrap: break-word; /* Damit lange Wörter umbrochen werden */
+      word-wrap: break-word;
     }
 
     .calendar {
@@ -75,6 +86,9 @@
     /* Timer-Buttons */
     .timer-buttons {
       margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .timer-buttons button {
@@ -96,29 +110,31 @@
 </head>
 <body>
 
-  <!-- ANALOGE + DIGITALE UHR -->
-  <canvas id="clockCanvas" width="300" height="300"></canvas>
-  <div id="digitalClock">--:--:--</div>
+  <div class="container">
+    <!-- ANALOGE + DIGITALE UHR -->
+    <canvas id="clockCanvas" width="300" height="300"></canvas>
+    <div id="digitalClock">--:--:--</div>
 
-  <!-- KALENDER -->
-  <div class="section calendar">
-    <div id="dateToday"></div>
-    <div id="calendarOutput"></div>
-  </div>
+    <!-- KALENDER -->
+    <div class="section calendar">
+      <div id="dateToday"></div>
+      <div id="calendarOutput"></div>
+    </div>
 
-  <!-- NOTIZEN -->
-  <div class="section notes">
-    <strong>Notizen:</strong>
-    <p>• Heute ist ein guter Tag für Fortschritt. 🎯</p>
-    <p>• Neue Projekte starten! 🚀</p>
-    <p>• Denke daran, immer positiv zu bleiben. ✨</p>
-  </div>
+    <!-- NOTIZEN -->
+    <div class="section notes">
+      <strong>Notizen:</strong>
+      <p>• Heute ist ein guter Tag für Fortschritt. 🎯</p>
+      <p>• Neue Projekte starten! 🚀</p>
+      <p>• Denke daran, immer positiv zu bleiben. ✨</p>
+    </div>
 
-  <!-- Timer Buttons -->
-  <div class="section timer-buttons">
-    <button onclick="startTimer(5)">5 Minuten</button>
-    <button onclick="startTimer(10)">10 Minuten</button>
-    <button onclick="startTimer(15)">15 Minuten</button>
+    <!-- Timer Buttons -->
+    <div class="section timer-buttons">
+      <button onclick="startTimer(5)">5 Minuten</button>
+      <button onclick="startTimer(10)">10 Minuten</button>
+      <button onclick="startTimer(15)">15 Minuten</button>
+    </div>
   </div>
 
   <script>
@@ -221,49 +237,4 @@
 
       var day = now.getDate();
       var weekday = now.getDay();
-      var month = now.getMonth();
-      var year = now.getFullYear();
-
-      document.getElementById("dateToday").textContent =
-        "Heute ist " + dayNames[weekday] + ", " + day + ". " + monthNames[month] + " " + year;
-
-      var firstDay = new Date(year, month, 1).getDay();
-      var daysInMonth = new Date(year, month + 1, 0).getDate();
-      var startOffset = (firstDay + 6) % 7;
-
-      var output = "Mo Di Mi Do Fr Sa So\n";
-      var line = "";
-
-      for (var i = 0; i < startOffset; i++) {
-        line += "   ";
-      }
-
-      for (var d = 1; d <= daysInMonth; d++) {
-        line += (d < 10 ? " " : "") + d + " ";
-        if ((d + startOffset) % 7 === 0) {
-          output += line + "\n";
-          line = "";
-        }
-      }
-      output += line;
-      document.getElementById("calendarOutput").textContent = output;
-    })();
-
-    // === TIMER ===
-    function startTimer(minutes) {
-      var time = minutes * 60;
-      var interval = setInterval(function() {
-        var minutesLeft = Math.floor(time / 60);
-        var secondsLeft = time % 60;
-        document.getElementById("digitalClock").textContent =
-          (minutesLeft < 10 ? "0" + minutesLeft : minutesLeft) + ":" +
-          (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft);
-        if (time <= 0) {
-          clearInterval(interval);
-        }
-        time--;
-      }, 1000);
-    }
-  </script>
-</body>
-</html>
+      var month = now.get
