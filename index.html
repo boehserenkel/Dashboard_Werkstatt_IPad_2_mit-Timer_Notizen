@@ -47,6 +47,7 @@
       height: auto;  /* Dynamische Höhe */
       max-width: 300px; /* Maximale Größe */
       max-height: 300px; /* Maximale Höhe */
+      margin-top: 20px;
     }
 
     #digitalClock {
@@ -253,7 +254,6 @@
 
       document.getElementById("dateToday").textContent = `${dayNames[weekday]}, ${day}. ${monthNames[month]} ${year}`;
 
-      var calendarOutput = document.getElementById("calendarOutput");
       var firstDay = new Date(year, month, 1).getDay();
       var lastDate = new Date(year, month + 1, 0).getDate();
 
@@ -266,8 +266,24 @@
         calendarHTML += `<div class='day'>${day}</div>`;
       }
 
-      calendarOutput.innerHTML = calendarHTML;
+      document.getElementById("calendarOutput").innerHTML = calendarHTML;
     })();
+
+    // === TIMER ===
+    function startTimer(minutes) {
+      var time = minutes * 60;
+      var interval = setInterval(function() {
+        var minutesLeft = Math.floor(time / 60);
+        var secondsLeft = time % 60;
+        document.getElementById("digitalClock").textContent =
+          (minutesLeft < 10 ? "0" + minutesLeft : minutesLeft) + ":" +
+          (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft);
+        if (time <= 0) {
+          clearInterval(interval);
+        }
+        time--;
+      }, 1000);
+    }
   </script>
 
 </body>
