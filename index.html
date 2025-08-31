@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Dashboard für iPad 2</title>
 
+  <!-- Optimierung für iPad 2 und Web-App Modus -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -19,40 +20,24 @@
       background: url('Werkstatt.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #222;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       text-align: center;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 90%;
-      height: 90%;
-      padding: 10px;
-      box-sizing: border-box;
-      overflow-y: auto;
     }
 
     canvas {
       background: white;
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      width: 70%;
-      height: 70%;
-      max-width: 300px;
-      max-height: 300px;
-      margin-top: 20px;
+      width: 400px;
+      height: 400px;
+      margin-top: 10px;
+      max-width: 90vw;
+      max-height: 90vw;
     }
 
     #digitalClock {
-      font-size: 2.5em;
+      font-size: 2em;
       font-family: monospace;
       margin: 10px 0;
-      color: red;
     }
 
     .section {
@@ -61,109 +46,86 @@
       background-color: rgba(255, 255, 255, 0.6);
       border-radius: 10px;
       display: inline-block;
-      width: 100%;
-      max-width: 500px;
-      word-wrap: break-word;
-      text-align: left;
+      max-width: 95vw;
     }
 
-    /* Kalender */
     .calendar {
       font-family: monospace;
-      font-size: 1.2em;
-      display: grid;
-      grid-template-columns: repeat(7, 1fr); /* 7 Spalten für die Tage der Woche */
-      gap: 5px;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .calendar div {
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.7);
-      border-radius: 5px;
-      font-size: 1.2em;
-    }
-
-    .empty {
-      background-color: transparent;
-    }
-
-    /* Timer */
-    .timer-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 20px; /* Abstand zwischen den Buttons */
-    }
-
-    .timer-buttons button {
+      white-space: pre;
       font-size: 1.5em;
-      padding: 12px;
-      margin: 12px;
-      background-color: #ff5722;
+    }
+
+    .infos {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+
+    strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    /* Timer Styles */
+    .timer-btns {
+      margin-top: 20px;
+    }
+    .timer-btns button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #4CAF50;
       color: white;
       border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
+      border-radius: 5px;
     }
 
-    .timer-buttons button:hover {
-      background-color: #e64a19;
-    }
-
-    /* Notizen */
-    .notes {
+    #timer {
+      font-size: 1.5em;
       margin-top: 20px;
-      font-size: 1.2em;
       color: #333;
     }
 
+    /* Notizen Styles */
     textarea {
       width: 100%;
       height: 150px;
-      font-size: 1.2em;
+      font-size: 16px;
       padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      resize: none;
     }
+
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- ANALOGE + DIGITALE UHR -->
-    <canvas id="clockCanvas" width="300" height="300"></canvas>
-    <div id="digitalClock">--:--:--</div>
+  <!-- ANALOGE + DIGITALE UHR -->
+  <canvas id="clockCanvas" width="500" height="500"></canvas>
+  <div id="digitalClock">--:--:--</div>
 
-    <!-- KALENDER -->
-    <div class="section calendar">
-      <div>So</div>
-      <div>Mo</div>
-      <div>Di</div>
-      <div>Mi</div>
-      <div>Do</div>
-      <div>Fr</div>
-      <div>Sa</div>
-      <div id="calendarOutput"></div>
-    </div>
+  <!-- KALENDER -->
+  <div class="section calendar">
+    <div id="dateToday"></div>
+    <div id="calendarOutput"></div>
+  </div>
 
-    <!-- NOTIZEN -->
-    <div class="section notes">
-      <strong>Notizen:</strong>
-      <textarea id="editableNotes">• Heute ist ein guter Tag für Fortschritt. 🎯
-• Neue Projekte starten! 🚀
-• Denke daran, immer positiv zu bleiben. ✨</textarea>
-    </div>
+  <!-- INFOS -->
+  <div class="section infos">
+    <strong>Infos:</strong>
+    Sieger stehen da auf, wo Verlierer liegen bleiben<br />
+    Hallo Tom & Paul<br />
+  </div>
 
-    <!-- Timer Buttons -->
-    <div class="section timer-buttons">
-      <button onclick="startTimer(5)">5 Minuten</button>
-      <button onclick="startTimer(10)">10 Minuten</button>
-      <button onclick="startTimer(15)">15 Minuten</button>
-    </div>
+  <!-- Timer -->
+  <div class="section timer-btns">
+    <button onclick="startTimer(5)">5 Minuten</button>
+    <button onclick="startTimer(10)">10 Minuten</button>
+    <button onclick="startTimer(15)">15 Minuten</button>
+  </div>
+  <div id="timer">00:00</div>
+
+  <!-- Notizen -->
+  <div class="section">
+    <strong>Notizen:</strong>
+    <textarea id="notes" placeholder="Schreibe deine Notizen hier..."></textarea>
   </div>
 
   <script>
@@ -269,38 +231,83 @@
       var month = now.getMonth();
       var year = now.getFullYear();
 
-      document.getElementById("dateToday").textContent = `${dayNames[weekday]}, ${day}. ${monthNames[month]} ${year}`;
+      document.getElementById("dateToday").textContent =
+        "Heute ist " + dayNames[weekday] + ", " + day + ". " + monthNames[month] + " " + year;
 
       var firstDay = new Date(year, month, 1).getDay();
       var daysInMonth = new Date(year, month + 1, 0).getDate();
-      var calendarOutput = document.getElementById("calendarOutput");
+      var startOffset = (firstDay + 6) % 7;
 
-      // Erzeuge leere Zellen für die ersten Tage
-      for (var i = 0; i < firstDay; i++) {
-        calendarOutput.innerHTML += `<div class="empty"></div>`;
+      var output = "Mo Di Mi Do Fr Sa So\n";
+      var line = "";
+
+      for (var i = 0; i < startOffset; i++) {
+        line += "   ";
       }
 
-      // Erzeuge die Tageszahlen
-      for (var dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
-        calendarOutput.innerHTML += `<div>${dayNumber}</div>`;
+      for (var d = 1; d <= daysInMonth; d++) {
+        line += (d < 10 ? " " + d : d) + " ";
+        if ((startOffset + d) % 7 === 0) {
+          output += line + "\n";
+          line = "";
+        }
       }
+
+      if (line !== "") output += line;
+      document.getElementById("calendarOutput").textContent = output;
     })();
 
     // === TIMER ===
+    let countdown;
+    let isTimerRunning = false;
+
     function startTimer(minutes) {
-      var time = minutes * 60;
-      var interval = setInterval(function() {
-        var minutesLeft = Math.floor(time / 60);
-        var secondsLeft = time % 60;
-        document.getElementById("digitalClock").textContent =
-          (minutesLeft < 10 ? "0" + minutesLeft : minutesLeft) + ":" +
-          (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft);
-        if (time <= 0) {
-          clearInterval(interval);
+      if (isTimerRunning) {
+        clearInterval(countdown);
+        isTimerRunning = false;
+        document.getElementById('timer').innerText = '00:00';
+      }
+      
+      let totalSeconds = minutes * 60;
+      isTimerRunning = true;
+      updateTimerDisplay(totalSeconds);
+      
+      countdown = setInterval(function () {
+        totalSeconds--;
+        updateTimerDisplay(totalSeconds);
+        
+        if (totalSeconds <= 0) {
+          clearInterval(countdown);
+          isTimerRunning = false;
+          alert("Zeit ist um!");
         }
-        time--;
       }, 1000);
     }
+
+    function updateTimerDisplay(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      document.getElementById('timer').innerText = `${padTime(minutes)}:${padTime(remainingSeconds)}`;
+    }
+
+    function padTime(time) {
+      return time < 10 ? '0' + time : time;
+    }
+
+    // === NOTIZEN ===
+    window.onload = function () {
+      const savedNotes = localStorage.getItem('notes');
+      if (savedNotes) {
+        document.getElementById('notes').value = savedNotes;
+      }
+    };
+
+    document.getElementById('notes').addEventListener('input', function () {
+      const notes = document.getElementById('notes').value;
+      localStorage.setItem('notes', notes);
+    });
+
   </script>
+
 </body>
 </html>
