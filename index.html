@@ -45,8 +45,8 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       width: 80%;  /* Dynamische Breite */
       height: auto;  /* Dynamische Höhe */
-      max-width: 400px; /* Maximale Größe */
-      max-height: 400px; /* Maximale Höhe */
+      max-width: 300px; /* Maximale Größe */
+      max-height: 300px; /* Maximale Höhe */
     }
 
     #digitalClock {
@@ -76,6 +76,17 @@
       margin-top: 20px;
       font-size: 1.4em; /* Größere Schrift für Notizen */
       color: #333;
+    }
+
+    /* Notizen als Textarea */
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 1.2em;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
     }
 
     strong {
@@ -121,12 +132,12 @@
       <div id="calendarOutput"></div>
     </div>
 
-    <!-- NOTIZEN -->
+    <!-- NOTIZEN (Textfeld, um es zu bearbeiten) -->
     <div class="section notes">
       <strong>Notizen:</strong>
-      <p>• Heute ist ein guter Tag für Fortschritt. 🎯</p>
-      <p>• Neue Projekte starten! 🚀</p>
-      <p>• Denke daran, immer positiv zu bleiben. ✨</p>
+      <textarea id="editableNotes">• Heute ist ein guter Tag für Fortschritt. 🎯
+• Neue Projekte starten! 🚀
+• Denke daran, immer positiv zu bleiben. ✨</textarea>
     </div>
 
     <!-- Timer Buttons -->
@@ -237,4 +248,27 @@
 
       var day = now.getDate();
       var weekday = now.getDay();
-      var month = now.get
+      var month = now.getMonth();
+      var year = now.getFullYear();
+
+      document.getElementById("dateToday").textContent = `${dayNames[weekday]}, ${day}. ${monthNames[month]} ${year}`;
+
+      var calendarOutput = document.getElementById("calendarOutput");
+      var firstDay = new Date(year, month, 1).getDay();
+      var lastDate = new Date(year, month + 1, 0).getDate();
+
+      var calendarHTML = "";
+      for (var i = 0; i < firstDay; i++) {
+        calendarHTML += "<div class='empty'></div>";
+      }
+
+      for (var day = 1; day <= lastDate; day++) {
+        calendarHTML += `<div class='day'>${day}</div>`;
+      }
+
+      calendarOutput.innerHTML = calendarHTML;
+    })();
+  </script>
+
+</body>
+</html>
