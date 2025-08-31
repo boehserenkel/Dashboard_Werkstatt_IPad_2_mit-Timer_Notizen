@@ -32,10 +32,11 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      height: 100%;
-      padding: 20px;
+      width: 90%;
+      height: 90%;
+      padding: 10px;
       box-sizing: border-box;
+      overflow-y: auto;
     }
 
     /* Anpassung des Canvas für das iPad 2 */
@@ -43,15 +44,15 @@
       background: white;
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      width: 80%;  /* Dynamische Breite */
-      height: auto;  /* Dynamische Höhe */
-      max-width: 300px; /* Maximale Größe */
-      max-height: 300px; /* Maximale Höhe */
+      width: 70%;
+      height: 70%;
+      max-width: 300px;
+      max-height: 300px;
       margin-top: 20px;
     }
 
     #digitalClock {
-      font-size: 3em; /* Größer, gut lesbar auf dem iPad 2 */
+      font-size: 2.5em;
       font-family: monospace;
       margin: 10px 0;
       color: red;
@@ -63,19 +64,21 @@
       background-color: rgba(255, 255, 255, 0.6);
       border-radius: 10px;
       display: inline-block;
-      max-width: 95vw;
+      width: 100%;
+      max-width: 500px; /* Maximal Breite der Sektionen */
       word-wrap: break-word;
+      text-align: left;
     }
 
     .calendar {
       font-family: monospace;
       white-space: pre;
-      font-size: 1.5em; /* Größere Schrift für den Kalender */
+      font-size: 1.2em;
     }
 
     .notes {
       margin-top: 20px;
-      font-size: 1.4em; /* Größere Schrift für Notizen */
+      font-size: 1.2em;
       color: #333;
     }
 
@@ -104,7 +107,7 @@
     }
 
     .timer-buttons button {
-      font-size: 1.5em;  /* Größere Buttons */
+      font-size: 1.5em;
       padding: 12px;
       margin: 12px;
       background-color: #ff5722;
@@ -254,37 +257,4 @@
 
       document.getElementById("dateToday").textContent = `${dayNames[weekday]}, ${day}. ${monthNames[month]} ${year}`;
 
-      var firstDay = new Date(year, month, 1).getDay();
-      var lastDate = new Date(year, month + 1, 0).getDate();
-
-      var calendarHTML = "";
-      for (var i = 0; i < firstDay; i++) {
-        calendarHTML += "<div class='empty'></div>";
-      }
-
-      for (var day = 1; day <= lastDate; day++) {
-        calendarHTML += `<div class='day'>${day}</div>`;
-      }
-
-      document.getElementById("calendarOutput").innerHTML = calendarHTML;
-    })();
-
-    // === TIMER ===
-    function startTimer(minutes) {
-      var time = minutes * 60;
-      var interval = setInterval(function() {
-        var minutesLeft = Math.floor(time / 60);
-        var secondsLeft = time % 60;
-        document.getElementById("digitalClock").textContent =
-          (minutesLeft < 10 ? "0" + minutesLeft : minutesLeft) + ":" +
-          (secondsLeft < 10 ? "0" + secondsLeft : secondsLeft);
-        if (time <= 0) {
-          clearInterval(interval);
-        }
-        time--;
-      }, 1000);
-    }
-  </script>
-
-</body>
-</html>
+      var firstDay = new Date(year, month, 1).getDay
