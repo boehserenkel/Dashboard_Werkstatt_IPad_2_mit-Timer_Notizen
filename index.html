@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Dashboard für iPad 2</title>
 
-  <!-- Optimierung für iPad 2 und Web-App Modus -->
+  <!-- iPad Homescreen-Konfiguration -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -62,11 +62,6 @@
       font-size: 1.2em;
     }
 
-    strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
     .timer-btns {
       margin-top: 20px;
     }
@@ -93,28 +88,33 @@
       font-size: 16px;
       padding: 10px;
     }
+
+    strong {
+      display: block;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- ANALOGE + DIGITALE UHR -->
-  <canvas id="clockCanvas"></canvas>
+  <!-- Uhren -->
+  <canvas id="clockCanvas" width="500" height="500"></canvas>
   <div id="digitalClock">--:--:--</div>
 
-  <!-- KALENDER -->
+  <!-- Kalender -->
   <div class="section calendar">
     <div id="dateToday"></div>
     <div id="calendarOutput"></div>
   </div>
 
-  <!-- INFOS -->
+  <!-- Infos -->
   <div class="section infos">
     <strong>Infos:</strong>
     Sieger stehen da auf, wo Verlierer liegen bleiben<br />
     Hallo Tom & Paul<br />
   </div>
 
-  <!-- TIMER -->
+  <!-- Timer -->
   <div class="section timer-btns">
     <button onclick="startTimer(5)">5 Minuten</button>
     <button onclick="startTimer(10)">10 Minuten</button>
@@ -122,7 +122,7 @@
   </div>
   <div id="timer">00:00</div>
 
-  <!-- NOTIZEN -->
+  <!-- Notizen -->
   <div class="section">
     <strong>Notizen:</strong>
     <textarea id="notes" placeholder="Schreibe deine Notizen hier..."></textarea>
@@ -130,26 +130,15 @@
 
   <script>
     // === ANALOGE + DIGITALE UHR ===
-    (function(){
+    (function() {
       const canvas = document.getElementById("clockCanvas");
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
 
-      // Retina-Optimierung
-      const logicalSize = 500;
-      const scale = window.devicePixelRatio || 1;
-      canvas.width = logicalSize * scale;
-      canvas.height = logicalSize * scale;
-      canvas.style.width = "400px";
-      canvas.style.height = "400px";
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(scale, scale);
-
-      let radius = logicalSize / 2;
+      const radius = canvas.width / 2;
       ctx.translate(radius, radius);
-      radius = radius * 0.90;
 
       function drawClock() {
+        ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
         drawFace(ctx, radius);
         drawNumbers(ctx, radius);
         drawTime(ctx, radius);
@@ -157,12 +146,14 @@
 
       function drawFace(ctx, radius) {
         ctx.beginPath();
-        ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+        ctx.arc(0, 0, radius * 0.95, 0, 2 * Math.PI);
         ctx.fillStyle = 'white';
         ctx.fill();
+
         ctx.strokeStyle = '#333';
         ctx.lineWidth = radius * 0.05;
         ctx.stroke();
+
         ctx.beginPath();
         ctx.arc(0, 0, radius * 0.05, 0, 2 * Math.PI);
         ctx.fillStyle = '#333';
@@ -170,27 +161,26 @@
       }
 
       function drawNumbers(ctx, radius) {
-        let ang, num;
-        ctx.font = radius * 0.18 + "px Arial";
+        ctx.font = radius * 0.15 + "px Arial";
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
-        for (num = 1; num <= 12; num++) {
-          ang = num * Math.PI / 6;
+        for (let num = 1; num <= 12; num++) {
+          const ang = num * Math.PI / 6;
           ctx.rotate(ang);
-          ctx.translate(0, -radius * 0.85);
+          ctx.translate(0, -radius * 0.8);
           ctx.rotate(-ang);
           ctx.fillText(num.toString(), 0, 0);
           ctx.rotate(ang);
-          ctx.translate(0, radius * 0.85);
+          ctx.translate(0, radius * 0.8);
           ctx.rotate(-ang);
         }
       }
 
-      function drawHand(ctx, pos, length, width, color) {
+      function drawHand(ctx, pos, length, width, color = "#000") {
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.lineCap = "round";
-        ctx.strokeStyle = color || "#000";
+        ctx.strokeStyle = color;
         ctx.moveTo(0, 0);
         ctx.rotate(pos);
         ctx.lineTo(0, -length);
@@ -200,35 +190,23 @@
 
       function drawTime(ctx, radius) {
         const now = new Date();
-        const hour = now.getHours();
+        let hour = now.getHours();
         const minute = now.getMinutes();
         const second = now.getSeconds();
 
-        // Digitale Uhr
-        const digital = document.getElementById("digitalClock");
-        digital.textContent =
-          (hour < 10 ? "0" + hour : hour) + ":" +
-          (minute < 10 ? "0" + minute : minute) + ":" +
-          (second < 10 ? "0" + second : second);
+        // Digitale Uhr setzen
+        document.getElementById("digitalClock").textContent =
+          `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
 
-        // Analoge Uhr
-        let h = hour % 12;
-        h = (h * Math.PI / 6) +
-            (minute * Math.PI / (6 * 60)) +
-            (second * Math.PI / (360 * 60));
-        drawHand(ctx, h, radius * 0.5, radius * 0.09);
-
-        let m = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-        drawHand(ctx, m, radius * 0.75, radius * 0.09);
-
-        let s = second * Math.PI / 30;
-        drawHand(ctx, s, radius * 0.85, radius * 0.03, "red");
+        hour = hour % 12;
+        hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
+        drawHand(ctx, hour, radius * 0.5, radius * 0.07);
+        drawHand(ctx, (minute * Math.PI / 30) + (second * Math.PI / (30 * 60)), radius * 0.75, radius * 0.07);
+        drawHand(ctx, second * Math.PI / 30, radius * 0.85, radius * 0.02, "red");
       }
 
-      setInterval(() => {
-        ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
-        drawClock();
-      }, 1000);
+      setInterval(drawClock, 1000);
+      drawClock(); // Initialer Aufruf
     })();
 
     // === KALENDER ===
@@ -253,9 +231,7 @@
       let output = "Mo Di Mi Do Fr Sa So\n";
       let line = "";
 
-      for (let i = 0; i < startOffset; i++) {
-        line += "   ";
-      }
+      for (let i = 0; i < startOffset; i++) line += "   ";
 
       for (let d = 1; d <= daysInMonth; d++) {
         line += (d < 10 ? " " + d : d) + " ";
@@ -264,7 +240,6 @@
           line = "";
         }
       }
-
       if (line !== "") output += line;
       document.getElementById("calendarOutput").textContent = output;
     })();
@@ -274,20 +249,13 @@
     let isTimerRunning = false;
 
     function startTimer(minutes) {
-      if (isTimerRunning) {
-        clearInterval(countdown);
-        isTimerRunning = false;
-        document.getElementById('timer').innerText = '00:00';
-      }
-
+      if (isTimerRunning) clearInterval(countdown);
       let totalSeconds = minutes * 60;
       isTimerRunning = true;
       updateTimerDisplay(totalSeconds);
-
-      countdown = setInterval(function () {
+      countdown = setInterval(() => {
         totalSeconds--;
         updateTimerDisplay(totalSeconds);
-
         if (totalSeconds <= 0) {
           clearInterval(countdown);
           isTimerRunning = false;
@@ -298,28 +266,22 @@
 
     function updateTimerDisplay(seconds) {
       const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      document.getElementById('timer').innerText = `${padTime(minutes)}:${padTime(remainingSeconds)}`;
+      const remaining = seconds % 60;
+      document.getElementById("timer").innerText = `${pad(minutes)}:${pad(remaining)}`;
     }
 
-    function padTime(time) {
-      return time < 10 ? '0' + time : time;
+    function pad(num) {
+      return num < 10 ? "0" + num : num;
     }
 
     // === NOTIZEN ===
     window.onload = function () {
-      const savedNotes = localStorage.getItem('notes');
-      if (savedNotes) {
-        document.getElementById('notes').value = savedNotes;
-      }
+      const saved = localStorage.getItem('notes');
+      if (saved) document.getElementById('notes').value = saved;
     };
-
     document.getElementById('notes').addEventListener('input', function () {
-      const notes = document.getElementById('notes').value;
-      localStorage.setItem('notes', notes);
+      localStorage.setItem('notes', this.value);
     });
-
   </script>
-
 </body>
 </html>
