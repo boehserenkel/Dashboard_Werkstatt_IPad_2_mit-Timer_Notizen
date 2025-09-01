@@ -1,107 +1,61 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard für iPad 2</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <style>
-    body {
-      margin: 0; padding: 0; font-family: sans-serif; text-align: center; background: url('Werkstatt.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #222;
-    }
-    #digitalClock {
-      font-size: 2.5em;
-      font-family: monospace;
-      color: red;
-      margin: 20px 0 0 0;
-      text-shadow: 0 0 10px red;
-    }
-    canvas {
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      width: 300px;
-      height: 300px;
-      display: block;
-      margin: 20px auto 40px auto;
-    }
-    .section {
-      background: rgba(255,255,255,0.8);
-      margin: 0 auto 20px auto;
-      padding: 15px;
-      border-radius: 10px;
-      max-width: 95vw;
-      font-family: monospace;
-      color: #333;
-    }
-    .calendar {
-      white-space: pre;
-      font-size: 1.2em;
-      line-height: 1.4em;
-    }
-    .infos {
-      font-size: 1.2em;
-    }
-    .timer-btns button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 16px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #timer {
-      font-size: 1.8em;
-      margin-top: 10px;
-      color: #333;
-      font-family: monospace;
-    }
-    textarea {
-      width: 100%;
-      height: 150px;
-      font-size: 16px;
-      padding: 10px;
-      box-sizing: border-box;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: none;
-      font-family: monospace;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Dashboard iPad 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<style>
+  body {
+    margin: 0; padding: 0; font-family: sans-serif; text-align: center; background: #eee;
+  }
+  #digitalClock {
+    font-size: 2.5em;
+    font-family: monospace;
+    color: red;
+    margin: 20px 0 0 0;
+    text-shadow: 0 0 10px red;
+  }
+  canvas {
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin: 20px auto 40px auto;
+  }
+  .timer-btns button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #timer {
+    font-size: 1.8em;
+    margin-top: 10px;
+    color: #333;
+    font-family: monospace;
+  }
+</style>
 </head>
 <body>
 
-  <div id="digitalClock">--:--:--</div>
-  <canvas id="clockCanvas" width="300" height="300"></canvas>
+<div id="digitalClock">--:--:--</div>
+<canvas id="clockCanvas" width="300" height="300"></canvas>
 
-  <div class="section calendar">
-    <div id="dateToday"></div>
-    <pre id="calendarOutput" class="calendar"></pre>
-  </div>
-
-  <div class="section infos">
-    <strong>Infos:</strong>
-    Sieger stehen da auf, wo Verlierer liegen bleiben<br />
-    Hallo Tom & Paul
-  </div>
-
-  <div class="section timer-btns">
-    <button onclick="startTimer(5)">5 Minuten</button>
-    <button onclick="startTimer(10)">10 Minuten</button>
-    <button onclick="startTimer(15)">15 Minuten</button>
-  </div>
-  <div id="timer">00:00</div>
-
-  <div class="section">
-    <strong>Notizen:</strong>
-    <textarea id="notes" placeholder="Schreibe deine Notizen hier..."></textarea>
-  </div>
+<div class="timer-btns">
+  <button onclick="startTimer(1)">1 Minute</button>
+  <button onclick="startTimer(2)">2 Minuten</button>
+  <button onclick="startTimer(5)">5 Minuten</button>
+</div>
+<div id="timer">00:00</div>
 
 <script>
-  // Analog und Digital Uhr
+window.onload = function() {
   var canvas = document.getElementById('clockCanvas');
   var ctx = canvas.getContext('2d');
   var radius = canvas.height / 2;
@@ -164,7 +118,7 @@
 
     // Digitale Uhr aktualisieren
     var digital = document.getElementById('digitalClock');
-    digital.textContent = 
+    digital.textContent =
       (now.getHours() < 10 ? '0' + now.getHours() : now.getHours()) + ':' +
       (minute < 10 ? '0' + minute : minute) + ':' +
       (second < 10 ? '0' + second : second);
@@ -183,63 +137,25 @@
   setInterval(drawClock, 1000);
   drawClock();
 
-  // Kalender
-  (function(){
-    var now = new Date();
-    var dayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                      "Juli", "August", "September", "Oktober", "November", "Dezember"];
-
-    var day = now.getDate();
-    var weekday = now.getDay();
-    var month = now.getMonth();
-    var year = now.getFullYear();
-
-    document.getElementById("dateToday").textContent =
-      "Heute ist " + dayNames[weekday] + ", " + day + ". " + monthNames[month] + " " + year;
-
-    var firstDay = new Date(year, month, 1).getDay();
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
-    var startOffset = (firstDay + 6) % 7;  // Mo=0
-
-    var output = "Mo Di Mi Do Fr Sa So\n";
-    var line = "";
-
-    for (var i = 0; i < startOffset; i++) {
-      line += "   ";
-    }
-
-    for (var d = 1; d <= daysInMonth; d++) {
-      line += (d < 10 ? " " + d : d) + " ";
-      if ((startOffset + d) % 7 === 0) {
-        output += line + "\n";
-        line = "";
-      }
-    }
-
-    if (line !== "") output += line;
-    document.getElementById("calendarOutput").textContent = output;
-  })();
-
   // Timer
   var countdown;
   var isTimerRunning = false;
 
-  function startTimer(minutes) {
+  window.startTimer = function(minutes) {
     if (isTimerRunning) {
       clearInterval(countdown);
       isTimerRunning = false;
       document.getElementById('timer').innerText = '00:00';
     }
-    
+
     var totalSeconds = minutes * 60;
     isTimerRunning = true;
     updateTimerDisplay(totalSeconds);
-    
+
     countdown = setInterval(function () {
       totalSeconds--;
       updateTimerDisplay(totalSeconds);
-      
+
       if (totalSeconds <= 0) {
         clearInterval(countdown);
         isTimerRunning = false;
@@ -247,7 +163,7 @@
         document.getElementById('timer').innerText = '00:00';
       }
     }, 1000);
-  }
+  };
 
   function updateTimerDisplay(seconds) {
     var minutes = Math.floor(seconds / 60);
@@ -258,19 +174,7 @@
   function padTime(time) {
     return time < 10 ? '0' + time : time;
   }
-
-  // Notizen speichern & laden
-  window.onload = function () {
-    var savedNotes = localStorage.getItem('notes');
-    if (savedNotes) {
-      document.getElementById('notes').value = savedNotes;
-    }
-  };
-
-  document.getElementById('notes').addEventListener('input', function () {
-    var notes = document.getElementById('notes').value;
-    localStorage.setItem('notes', notes);
-  });
+};
 </script>
 
 </body>
