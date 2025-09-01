@@ -35,9 +35,11 @@
     }
 
     #digitalClock {
-      font-size: 2em;
+      font-size: 2.5em;
       font-family: monospace;
       margin: 10px 0;
+      color: red;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
     }
 
     .section {
@@ -65,10 +67,10 @@
       margin-bottom: 5px;
     }
 
-    /* Timer Styles */
     .timer-btns {
       margin-top: 20px;
     }
+
     .timer-btns button {
       margin: 5px;
       padding: 10px 15px;
@@ -85,20 +87,18 @@
       color: #333;
     }
 
-    /* Notizen Styles */
     textarea {
       width: 100%;
       height: 150px;
       font-size: 16px;
       padding: 10px;
     }
-
   </style>
 </head>
 <body>
 
   <!-- ANALOGE + DIGITALE UHR -->
-  <canvas id="clockCanvas" width="500" height="500"></canvas>
+  <canvas id="clockCanvas"></canvas>
   <div id="digitalClock">--:--:--</div>
 
   <!-- KALENDER -->
@@ -114,7 +114,7 @@
     Hallo Tom & Paul<br />
   </div>
 
-  <!-- Timer -->
+  <!-- TIMER -->
   <div class="section timer-btns">
     <button onclick="startTimer(5)">5 Minuten</button>
     <button onclick="startTimer(10)">10 Minuten</button>
@@ -122,7 +122,7 @@
   </div>
   <div id="timer">00:00</div>
 
-  <!-- Notizen -->
+  <!-- NOTIZEN -->
   <div class="section">
     <strong>Notizen:</strong>
     <textarea id="notes" placeholder="Schreibe deine Notizen hier..."></textarea>
@@ -131,11 +131,21 @@
   <script>
     // === ANALOGE + DIGITALE UHR ===
     (function(){
-      var canvas = document.getElementById("clockCanvas");
-      var ctx = canvas.getContext("2d");
+      const canvas = document.getElementById("clockCanvas");
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      var radius = canvas.height / 2;
+      // Retina-Optimierung
+      const logicalSize = 500;
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = logicalSize * scale;
+      canvas.height = logicalSize * scale;
+      canvas.style.width = "400px";
+      canvas.style.height = "400px";
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(scale, scale);
+
+      let radius = logicalSize / 2;
       ctx.translate(radius, radius);
       radius = radius * 0.90;
 
@@ -160,7 +170,7 @@
       }
 
       function drawNumbers(ctx, radius) {
-        var ang, num;
+        let ang, num;
         ctx.font = radius * 0.18 + "px Arial";
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
@@ -189,63 +199,65 @@
       }
 
       function drawTime(ctx, radius) {
-        var now = new Date();
-        var hour = now.getHours();
-        var minute = now.getMinutes();
-        var second = now.getSeconds();
+        const now = new Date();
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
 
-        var digital = document.getElementById("digitalClock");
+        // Digitale Uhr
+        const digital = document.getElementById("digitalClock");
         digital.textContent =
           (hour < 10 ? "0" + hour : hour) + ":" +
           (minute < 10 ? "0" + minute : minute) + ":" +
           (second < 10 ? "0" + second : second);
 
-        hour = hour % 12;
-        hour = (hour * Math.PI / 6) +
-               (minute * Math.PI / (6 * 60)) +
-               (second * Math.PI / (360 * 60));
-        drawHand(ctx, hour, radius * 0.5, radius * 0.09);
+        // Analoge Uhr
+        let h = hour % 12;
+        h = (h * Math.PI / 6) +
+            (minute * Math.PI / (6 * 60)) +
+            (second * Math.PI / (360 * 60));
+        drawHand(ctx, h, radius * 0.5, radius * 0.09);
 
-        minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-        drawHand(ctx, minute, radius * 0.75, radius * 0.09);
+        let m = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+        drawHand(ctx, m, radius * 0.75, radius * 0.09);
 
-        second = second * Math.PI / 30;
-        drawHand(ctx, second, radius * 0.85, radius * 0.03, "red");
+        let s = second * Math.PI / 30;
+        drawHand(ctx, s, radius * 0.85, radius * 0.03, "red");
       }
 
-      setInterval(function() {
-        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+      setInterval(() => {
+        ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
         drawClock();
       }, 1000);
     })();
 
     // === KALENDER ===
     (function(){
-      var now = new Date();
-      var dayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-      var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                        "Juli", "August", "September", "Oktober", "November", "Dezember"];
+      const now = new Date();
+      const dayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+      const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+                          "Juli", "August", "September", "Oktober", "November", "Dezember"];
 
-      var day = now.getDate();
-      var weekday = now.getDay();
-      var month = now.getMonth();
-      var year = now.getFullYear();
+      const day = now.getDate();
+      const weekday = now.getDay();
+      const month = now.getMonth();
+      const year = now.getFullYear();
 
       document.getElementById("dateToday").textContent =
         "Heute ist " + dayNames[weekday] + ", " + day + ". " + monthNames[month] + " " + year;
 
-      var firstDay = new Date(year, month, 1).getDay();
-      var daysInMonth = new Date(year, month + 1, 0).getDate();
-      var startOffset = (firstDay + 6) % 7;
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const startOffset = (firstDay + 6) % 7;
 
-      var output = "Mo Di Mi Do Fr Sa So\n";
-      var line = "";
+      let output = "Mo Di Mi Do Fr Sa So\n";
+      let line = "";
 
-      for (var i = 0; i < startOffset; i++) {
+      for (let i = 0; i < startOffset; i++) {
         line += "   ";
       }
 
-      for (var d = 1; d <= daysInMonth; d++) {
+      for (let d = 1; d <= daysInMonth; d++) {
         line += (d < 10 ? " " + d : d) + " ";
         if ((startOffset + d) % 7 === 0) {
           output += line + "\n";
@@ -267,15 +279,15 @@
         isTimerRunning = false;
         document.getElementById('timer').innerText = '00:00';
       }
-      
+
       let totalSeconds = minutes * 60;
       isTimerRunning = true;
       updateTimerDisplay(totalSeconds);
-      
+
       countdown = setInterval(function () {
         totalSeconds--;
         updateTimerDisplay(totalSeconds);
-        
+
         if (totalSeconds <= 0) {
           clearInterval(countdown);
           isTimerRunning = false;
